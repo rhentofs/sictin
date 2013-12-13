@@ -1,0 +1,16 @@
+
+The SICTIN-software have three pre-compile options in storing the signals; UNSIGNED SHORT, 
+INTEGER or DOUBLE. UNSIGNED SHORT is the default. Changes to this storage type is done in the 
+Makefile. 
+
+* To compile using make: 
+
+On systems with 'make' - make sure you are in the SICTIN directory and type 'make'. 
+
+* To manually compile: 
+
+example: 
+g++ -O3 -DSHR_REP -c src/utils.cpp -o bin/utils.o
+
+g++ -O3 -DSHR_REP src/make_footprint.cpp bin/utils.o -o bin/make_footprint
+
