@@ -27,7 +27,7 @@ void Tokenize(const string& str,
   string::size_type lastPos = str.find_first_not_of(delimiters, 0);
   // Find first "non-delimiter".
   string::size_type pos     = str.find_first_of(delimiters, lastPos);
-  
+
   while (string::npos != pos || string::npos != lastPos)
     {
       // Found a token, add it to the vector.
@@ -43,13 +43,13 @@ void Tokenize(const string& str,
 /*
  * returns the 'next' position to start from.
  *
- */ 
+ */
 string::size_type readAndTokenize(const string& str,
 				  vector<string>& tokens,
 				  const string& delimiters,
 				  string::size_type firstPos)
 {
-  
+
   // Skip delimiters at beginning.
   firstPos = str.find_first_not_of(delimiters + "\n",firstPos);
   // Set the end.
@@ -69,8 +69,8 @@ string::size_type readAndTokenize(const string& str,
       firstPos = str.find_first_not_of(delimiters + "\n", pos);
       // Find next "non-delimiter"
       pos = str.find_first_of(delimiters + "\n", firstPos);
-    } 
-  // Push the last one.  
+    }
+  // Push the last one.
   tokens.push_back(str.substr(firstPos, pos - firstPos));
   //cerr<<str.substr(firstPos, pos - firstPos)<<endl;
   //cout<<"RAT: "<<tokens[1]<<" "<<tokens[2]<<" "<<tokens[3]<<" "<<tokens[4]<<endl;
@@ -78,9 +78,9 @@ string::size_type readAndTokenize(const string& str,
 }
 
 /************************************************************
- * 
+ *
  * Random stuff. this should be uniform in the given span...
- * 
+ *
  *
  ************************************************************/
 
@@ -94,8 +94,8 @@ int uniform_range(int low,int high)
 
 /************************************************************
  *
- * Binary file accessors. 
- * 
+ * Binary file accessors.
+ *
  ************************************************************/
 
 
@@ -104,13 +104,13 @@ int uniform_range(int low,int high)
  * Calculate min & max position in a given file.
  *
  * writes parameters to the given int-pointers.
- * returns 0, -1 on error. 
- * 
+ * returns 0, -1 on error.
+ *
  ************************************************************/
 
 int getMinMaxC(const char* fname, int* min, int* max)
 {
-  // open the file and get some initial parameters. 
+  // open the file and get some initial parameters.
   ifstream inf;
   inf.open(fname,ios::binary| ios::ate);
   if(!inf.is_open())
@@ -123,8 +123,8 @@ int getMinMaxC(const char* fname, int* min, int* max)
   return(0);
 }
 
-// moves around the file-pointer some, disregards the effects. 
-//(could be done better with ios::cur and stuff) 
+// moves around the file-pointer some, disregards the effects.
+//(could be done better with ios::cur and stuff)
 int getMinMaxF(ifstream * inf, int* min, int* max)
 {
   inf->seekg(0,ios::end);
@@ -138,9 +138,9 @@ int getMinMaxF(ifstream * inf, int* min, int* max)
 /************************************************************
  *
  * Access the given file and retrieve the signal in the given
- * coordinates. 
+ * coordinates.
  *
- * Fails (returns -1) if the coordinates are illegal.   
+ * Fails (returns -1) if the coordinates are illegal.
  *
  *
  ************************************************************/
@@ -187,14 +187,14 @@ int getSignalF(ifstream * inf, int from, int to, storageType * signal)
 
 /************************************************************
  *
- * Access a given binary file, retrives all signals from a 
- * text-file with two columns start & stop. 
- * writes all failed access attempts to a second file. 
+ * Access a given binary file, retrives all signals from a
+ * text-file with two columns start & stop.
+ * writes all failed access attempts to a second file.
  *
- * puts the successful reads in another binary file, 
- * assumes all are of equal length (hard to sort out that file 
+ * puts the successful reads in another binary file,
+ * assumes all are of equal length (hard to sort out that file
  * otherwise.)
- * 
+ *
  * returns the number of successful reads.
  *
  ************************************************************/
@@ -212,8 +212,8 @@ int getSignalsBin(const char * bin_file,const char* q_file, const char* out_file
   ofstream errf;
   qinf.open(q_file);
   errf.open(err_file);
-  
-  // do some error checking. 
+
+  // do some error checking.
   if(!inf.is_open() || !outf.is_open() || !qinf.is_open()|| !errf.is_open())
     {
       cerr<<"Some files could not be open"<<endl;
@@ -239,12 +239,12 @@ int getSignalsBin(const char * bin_file,const char* q_file, const char* out_file
 	  errf<<data[0]<<" "<<data[0]<<endl;
 	}
       else
-	{ 
+	{
 	  outf.write((char*)tmpSignals,sizeof(storageType)*(to - from + 1));
 	  success++;
 	}
       delete[] tmpSignals;
-      getline(qinf,line); 
+      getline(qinf,line);
     }
   if(success == 0) // no queries worked.
     success = -1;
@@ -260,7 +260,7 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
   //open the binary
   ifstream inf;
   inf.open(bin_file,ios::binary);
-  
+
   // open the text-files
   ifstream qinf;
   ofstream errf;
@@ -268,8 +268,8 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
   qinf.open(q_file);
   errf.open(err_file);
   outf.open(out_file);
-   
-  // do some error checking. 
+
+  // do some error checking.
   if(!inf.is_open() || !outf.is_open() || !qinf.is_open()|| !errf.is_open())
     {
       cerr<<"Some files could not be open"<<endl;
@@ -289,7 +289,7 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
       Tokenize (line,data," \t");
       from = atoi(data[0].c_str());
       to   = atoi(data[1].c_str());
-      
+
       // not a valid range.
       if((to - from + 1) < 1)
 	{
@@ -311,7 +311,7 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
 		}
 	    }
 	  else
-	    { 
+	    {
 	      if (strcmp(err_symb,"") == 0)
 		outf<<">"<<data[0]<<" "<<data[1]<<endl;
 	      if(avg ==0)
@@ -332,12 +332,12 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
 	      success ++;
 	    }
 	  delete[] tmpSignals;
-	}	
+	}
       getline(qinf,line);
     }
   if(success == 0) // no queries worked.
     success = -1;
- 
+
   inf.close();
   outf.close();
   qinf.close();
@@ -345,19 +345,19 @@ int getSignalsTxt(const char* bin_file,const char* q_file, const char* out_file,
   return(success);
 }
 
-int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file, 
+int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file,
 		 const char* out_file,const char* err_file,
 		 int offset, int progress, int co, int move)
 {
   //open the binaries
   ifstream inf;
   inf.open(bin_file,ios::binary);
-  
+
   bool fc = (strcmp(fc_bin_file,"") != 0);
   ifstream fcinf;
   if(fc)
     fcinf.open(fc_bin_file,ios::binary);
-  
+
   // open the text-files
   ifstream qinf;
   ofstream errf;
@@ -365,8 +365,8 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
   qinf.open(q_file);
   errf.open(err_file);
   outf.open(out_file);
-   
-  // do some error checking. 
+
+  // do some error checking.
   if(!inf.is_open())
     {
       cerr<<"infile could not be open"<<endl;
@@ -376,7 +376,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
       qinf.close();
       errf.close();
       return(-1);
-    } 
+    }
   if(fc && !fcinf.is_open())
     {
       cerr<<"fc infile could not be open"<<endl;
@@ -386,7 +386,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
       qinf.close();
       errf.close();
       return(-1);
-    } 
+    }
   if(!outf.is_open())
     {
       cerr<<"outfile could not be open"<<endl;
@@ -396,7 +396,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
       qinf.close();
       errf.close();
       return(-1);
-    } 
+    }
   if(!qinf.is_open())
     {
       cerr<<"queryfile could not be open"<<endl;
@@ -406,7 +406,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
       qinf.close();
       errf.close();
       return(-1);
-    } 
+    }
   if(!errf.is_open())
     {
       cerr<<"errorfile could not be open"<<endl;
@@ -416,8 +416,8 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
       qinf.close();
       errf.close();
       return(-1);
-    } 
-  
+    }
+
   int nlines = -1;
   string line;
   if(progress != 0)
@@ -435,9 +435,9 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
     }
   vector<string> data;
   storageType * tmpSignals;
-  tmpSignals = new storageType[2*offset + 1]; 
+  tmpSignals = new storageType[2*offset + 1];
   storageType * tmpSignals_fc;
-  tmpSignals_fc = new storageType[2*offset + 1]; 
+  tmpSignals_fc = new storageType[2*offset + 1];
   // use this for Positive oriented signals.
   //unsigned int SignalsP[2*offset + 1];
   double SignalsP[2*offset + 1];
@@ -457,13 +457,13 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
   while(!qinf.eof())
     {
       line_cnt++;
-      if((progress != 0) && ((line_cnt % 1000) == 0)) 
+      if((progress != 0) && ((line_cnt % 1000) == 0))
 	cerr<<setw(4)<<setfill(' ')<<setprecision(2)<<100*line_cnt/nlines<<" % complete.\r";
-      
+
       data.clear();
       Tokenize (line,data," \t");
       pos = atoi(data[0].c_str());
-      if(getSignalF(&inf, pos-offset+move,pos + offset+move,tmpSignals)<0 || 
+      if(getSignalF(&inf, pos-offset+move,pos + offset+move,tmpSignals)<0 ||
 	 (fc ? getSignalF(&fcinf, pos-offset+move,pos + offset+move,tmpSignals_fc)<0 : false))
 	{
 	  errf<<data[0]<<"\t"<<data[1]<<endl;
@@ -491,7 +491,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
 		  successP++;
                 }
 	      else
-		{ 
+		{
 		  for (int i = 0; i < (2*offset + 1);i++)
 		    if(fc)
 		      {
@@ -504,7 +504,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
                 }
 	    }
 	}
-      getline(qinf,line); 
+      getline(qinf,line);
     }
   if(successP == 0 && successN == 0) // no queries worked.
     {
@@ -515,7 +515,7 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
     {
       outf<<">+ "<<successP<<endl;
       if(successP != 0)
-	{	      
+	{
 	  outf<<(double)SignalsP[0]/successP;
 	  for (int i = 1; i < (2*offset + 1);i++)
 	    outf<<" "<<(double)SignalsP[i]/successP;
@@ -527,10 +527,10 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
 	  for (int i = 1; i < (2*offset + 1);i++)
 	    outf<<" "<<0;
 	  outf<<endl;
-	}     
+	}
       outf<<">- "<<successN<<endl;
       if(successN != 0)
-	{	      
+	{
 	  outf<<(double)SignalsN[0]/successN;
 	  for (int i = 1; i < (2*offset + 1);i++)
 	    outf<<" "<<(double)SignalsN[i]/successN;
@@ -542,12 +542,12 @@ int getSignalsFP(const char* bin_file,const char* fc_bin_file,const char* q_file
 	  for (int i = 1; i < (2*offset + 1);i++)
 	    outf<<" "<<0;
 	  outf<<endl;
-	}     
+	}
     }
   if(progress != 0)
     cerr<<" 100 % complete"<<endl;
   cerr<<successP + successN<<" queries succesfully executed."<<endl;
-  delete[] tmpSignals; 
+  delete[] tmpSignals;
   delete[] tmpSignals_fc;
  inf.close();
   fcinf.close();
@@ -573,12 +573,12 @@ int parseQueryLine(string str,inputLine* res)
 }
 /*
  *
- * checks the query file, ie which sequences are to be queried and how many 
- * queries on each. 
+ * checks the query file, ie which sequences are to be queried and how many
+ * queries on each.
  *
  */
 
-  
+
 int queryControl(ifstream * inf,map<string,seqStats> * seqmap,bool verbose)
 {
   int nlines = 0;
@@ -590,28 +590,28 @@ int queryControl(ifstream * inf,map<string,seqStats> * seqmap,bool verbose)
   tmpStat.truncR = 0;
   tmpStat.truncF = 0;
   tmpStat.truncC = 0;
-  
+
   while(!(inf->eof()))
-    { 
-      if((nlines % 1000) == 0) 
+    {
+      if((nlines % 1000) == 0)
 	cerr<<"-\r";
-      if((nlines % 2000) == 0) 
+      if((nlines % 2000) == 0)
 	cerr<<"/\r";
-      if((nlines % 3000) == 0) 
+      if((nlines % 3000) == 0)
 	cerr<<"|\r";
-      if((nlines % 4000) == 0) 
+      if((nlines % 4000) == 0)
 	cerr<<"\\\r";
-      if((nlines % 5000) == 0) 
+      if((nlines % 5000) == 0)
 	cerr<<"-\r";
-      
-      getline(*inf,line); 
-      if(parseQueryLine(line,&tmp) < 1) // skip possible empty lines 
+
+      getline(*inf,line);
+      if(parseQueryLine(line,&tmp) < 1) // skip possible empty lines
 	continue;
-      
+
       nlines++;
       // try and insert into seqmap.
       tmpStat.minPos = tmp.pos;
-      tmpStat.maxPos = tmp.pos; 
+      tmpStat.maxPos = tmp.pos;
       tmpStat.countF = 0;
       tmpStat.countR = 0;
       if(tmp.strand == 1) // forward strand
@@ -619,23 +619,23 @@ int queryControl(ifstream * inf,map<string,seqStats> * seqmap,bool verbose)
       else
 	tmpStat.countR++;
       ret = seqmap->insert(pair<string,seqStats> (tmp.seq,tmpStat));
-      
+
       if(!ret.second) // already a key with this value.
 	{
 	  if(tmpStat.minPos < (*seqmap)[tmp.seq].minPos)
 	    (*seqmap)[tmp.seq].minPos = tmpStat.minPos;
-	  
+
 	  if(tmpStat.maxPos > (*seqmap)[tmp.seq].maxPos)
 	    (*seqmap)[tmp.seq].maxPos = tmpStat.maxPos;
-	  
+
 	  if(tmp.strand == 1) // forward strand
 	    (*seqmap)[tmp.seq].countF++;
 	  else
 	    (*seqmap)[tmp.seq].countR++;
 	}
     }
-  // reset the file-stream  
-  inf->clear(); 
+  // reset the file-stream
+  inf->clear();
   inf->seekg(0,ios::beg);
   return(nlines);
 }
@@ -651,37 +651,37 @@ int queryControlBED(ifstream * inf,map<string,seqStats> * seqmap,bool verbose,st
   tmpStat.truncR = 0;
   tmpStat.truncF = 0;
   tmpStat.truncC = 0;
-  
+
   while(!(inf->eof()))
-    { 
-      if((nlines % 1000) == 0) 
+    {
+      if((nlines % 1000) == 0)
 	cerr<<"-\r";
-      if((nlines % 2000) == 0) 
+      if((nlines % 2000) == 0)
 	cerr<<"/\r";
-      if((nlines % 3000) == 0) 
+      if((nlines % 3000) == 0)
 	cerr<<"|\r";
-      if((nlines % 4000) == 0) 
+      if((nlines % 4000) == 0)
 	cerr<<"\\\r";
-      if((nlines % 5000) == 0) 
+      if((nlines % 5000) == 0)
 	cerr<<"-\r";
-      
-      getline(*inf,line); 
+
+      getline(*inf,line);
       if(parseBEDline(line,&tmp,0,1,2,5) < 1) // skip possible empty lines
 	continue;
       // prepare the query accoding to which position that should be used?
       if(strcmp(type.c_str(),"c") == 0)
 	tmp.pos += (int)(((double)(tmp.len-1)/2.0) + 0.5);
       if(strcmp(type.c_str(),"s") == 0)
-	if(tmp.strand == -1) // negative strand. flip. 
+	if(tmp.strand == -1) // negative strand. flip.
 	  tmp.pos += (tmp.len-1);
       if(strcmp(type.c_str(),"e") == 0)
 	if(tmp.strand == 1) // positive strand
 	  tmp.pos += (tmp.len-1);
-      
+
       nlines++;
       // try and insert into seqmap.
       tmpStat.minPos = tmp.pos;
-      tmpStat.maxPos = tmp.pos; 
+      tmpStat.maxPos = tmp.pos;
       tmpStat.countF = 0;
       tmpStat.countR = 0;
       if(tmp.strand == 1) // forward strand
@@ -689,23 +689,23 @@ int queryControlBED(ifstream * inf,map<string,seqStats> * seqmap,bool verbose,st
       else
 	tmpStat.countR++;
       ret = seqmap->insert(pair<string,seqStats> (tmp.seq,tmpStat));
-      
+
       if(!ret.second) // already a key with this value.
 	{
 	  if(tmpStat.minPos < (*seqmap)[tmp.seq].minPos)
 	    (*seqmap)[tmp.seq].minPos = tmpStat.minPos;
-	  
+
 	  if(tmpStat.maxPos > (*seqmap)[tmp.seq].maxPos)
 	    (*seqmap)[tmp.seq].maxPos = tmpStat.maxPos;
-	  
+
 	  if(tmp.strand == 1) // forward strand
 	    (*seqmap)[tmp.seq].countF++;
 	  else
 	    (*seqmap)[tmp.seq].countR++;
 	}
     }
-  // reset the file-stream  
-  inf->clear(); 
+  // reset the file-stream
+  inf->clear();
   inf->seekg(0,ios::beg);
   return(nlines);
 }
@@ -715,7 +715,7 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 			 int offset,int progress,int co,int move,int both,int nq,int all)
 
 {
-  
+
   string preR = "R_";
   string preF = "F_";
   string preC = "C_";
@@ -726,7 +726,7 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
   bool allFilesOk = true;
   ofstream ofs[4];
   ofstream aofs[3];
-  
+
   // the order of the output files is assumed to be FRC below. indexes (0-2) are used.
   ofs[0].open((preF + ofStub).c_str(),ios::trunc);
   if(!ofs[0].good())
@@ -740,9 +740,9 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
       cerr<<"Could not open "<<(preR + ofStub).c_str()<<endl;
       allFilesOk = false;
     }
-  
+
   if(both > 0)
-    {  
+    {
       ofs[2].open((preC + ofStub).c_str(),ios::trunc);
       if(!ofs[2].good())
 	{
@@ -750,8 +750,8 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 	  allFilesOk = false;
 	}
     }
-  
-  if(all == 1) // each data point should be written. open the extra output files. 
+
+  if(all == 1) // each data point should be written. open the extra output files.
     {
       aofs[0].open((preFall + ofStub).c_str(),ios::trunc);
       if(!aofs[0].good())
@@ -765,9 +765,9 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 	  cerr<<"Could not open "<<(preRall + ofStub).c_str()<<endl;
 	  allFilesOk = false;
 	}
-      
+
       if(both > 0)
-	{  
+	{
 	  aofs[2].open((preCall + ofStub).c_str(),ios::trunc);
 	  if(!aofs[2].good())
 	    {
@@ -776,7 +776,7 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 	    }
 	}
     }
-  
+
   // the error-file, where failed queries will be recorded.
   ofs[3].open(eFile.c_str(),ios::trunc);
   if(!ofs[3].good())
@@ -784,8 +784,8 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
       cerr<<"Could not open "<<eFile<<endl;
       allFilesOk = false;
     }
-  
-  
+
+
 
 
   if(!allFilesOk)
@@ -800,49 +800,49 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 
   /*
    *  process queries and store +/- signals for each type R,F and (possibly) C
-   * 
-   */ 
+   *
+   */
   int line_cnt = 0;
   bool passCo = false;
   string line;
   inputLine tmp;
   storageType * tmpSignals;
-  tmpSignals = new storageType[2*offset + 1]; 
+  tmpSignals = new storageType[2*offset + 1];
   // use this to store the signals, FP,RP,CP,FN,RN,CN ordered.
-  unsigned int signals[6][2*offset + 1];
+  double signals[6][2*offset + 1];
   // counters. FP,RP,CP,FN,RN,CN ordered.
   int succCnt[6] = {0,0,0,0,0,0};
   int sigReturn;
   for (int j = 0; j < 6;j++)
     for (int i = 0; i < (2*offset + 1);i++)
       signals[j][i] = 0;
-  
+
   while(!infq->eof())
     {
       line_cnt++;
-      if((progress != 0) && ((line_cnt % 1000) == 0)) 
+      if((progress != 0) && ((line_cnt % 1000) == 0))
 	cerr<<setw(4)<<setfill(' ')<<setprecision(2)<<100*line_cnt/nq<<" % complete.\r";
       // read and parse one query.
-      getline(*infq,line); 
-      if(parseQueryLine(line,&tmp) < 1) // skip possible empty lines 
+      getline(*infq,line);
+      if(parseQueryLine(line,&tmp) < 1) // skip possible empty lines
 	continue;
       for (int sigType = 0;sigType<=2;sigType++)
 	{
 	  if((sigType == 2) && (both == 0)) // combined but no combined wanted
 	    break;
-	  // Forward (0) 
+	  // Forward (0)
 	  if(sigType == 0)
 	    sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsF,
 				   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
-	  // Reverse (1) 
+	  // Reverse (1)
 	  if(sigType == 1)
 	    sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsR,
 				   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
-	  // Combined (2) 
+	  // Combined (2)
 	  if(sigType == 2)
 	    sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsC,
 				   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
-	  
+
 	  if(sigReturn < 0) // failed query. write to error-file
 	    {
 	      ofs[3]<<tmp.seq<<"\t"<<tmp.pos<<"\t"<<(tmp.strand == 1 ? "+":"-")<<endl;
@@ -880,7 +880,7 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 			}
 		    }
 		  else
-		    { 
+		    {
 		      for (int i = 0; i < (2*offset + 1);i++)
 			signals[3+sigType][i] += tmpSignals[2*offset - i];
 		      succCnt[3+sigType]++;
@@ -895,13 +895,13 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 			}
 		    }
 		}
-	      
+
 	    }
 	}
     } // while()
   // clear the infq in case the caller expects it to be ok.
   infq->clear();
-  
+
   /*
    * write out results.
    */
@@ -922,7 +922,7 @@ int getMultipleSignalsFP(ifstream * infq,map<string,fsHolder> seqFiles,string of
 	ofs[sigType]<<" "<<(double)signals[3+sigType][i]/(succCnt[3+sigType] == 0 ? 1 : succCnt[3+sigType]);
       ofs[sigType]<<endl;
     }
-  
+
   for(int i = 0;i<4;i++)
     ofs[i].close();
   for(int i = 0;i<3;i++)
@@ -937,7 +937,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 								int avg,string errSymb,int useOrg,int nrBins)
 
 {
-  
+
   string preR = "R_";
   string preF = "F_";
   string preC = "C_";
@@ -948,7 +948,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
   bool allFilesOk = true;
   ofstream ofs[4];
   ofstream aofs[3];
-  
+
   // the order of the output files is assumed to be FRC below. indexes (0-2) are used.
   ofs[0].open((preF + ofStub).c_str(),ios::trunc);
   if(!ofs[0].good())
@@ -962,9 +962,9 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
       cerr<<"Could not open "<<(preR + ofStub).c_str()<<endl;
       allFilesOk = false;
     }
-  
+
   if(both > 0)
-    {  
+    {
       ofs[2].open((preC + ofStub).c_str(),ios::trunc);
       if(!ofs[2].good())
 		{
@@ -972,8 +972,8 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 		  allFilesOk = false;
 		}
     }
-  
-  if(all == 1) // each data point should be written. open the extra output files. 
+
+  if(all == 1) // each data point should be written. open the extra output files.
     {
       aofs[0].open((preFall + ofStub).c_str(),ios::trunc);
       if(!aofs[0].good())
@@ -987,9 +987,9 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 		  cerr<<"Could not open "<<(preRall + ofStub).c_str()<<endl;
 		  allFilesOk = false;
 		}
-      
+
       if(both > 0)
-		{  
+		{
 		  aofs[2].open((preCall + ofStub).c_str(),ios::trunc);
 		  if(!aofs[2].good())
 			{
@@ -998,7 +998,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 			}
 		}
     }
-  
+
   // the error-file, where failed queries will be recorded.
   ofs[3].open(eFile.c_str(),ios::trunc);
   if(!ofs[3].good())
@@ -1006,8 +1006,8 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
       cerr<<"Could not open "<<eFile<<endl;
       allFilesOk = false;
     }
-  
-  
+
+
 
 
   if(!allFilesOk)
@@ -1022,19 +1022,19 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 
   /*
    *  process queries and store +/- signals for each type R,F and (possibly) C
-   * 
-   */ 
+   *
+   */
   int line_cnt = 0;
   bool passCo = false;
   string line;
   inputLine tmp;
   storageType * tmpSignals;
-  tmpSignals = new storageType[2*offset + 1]; 
+  tmpSignals = new storageType[2*offset + 1];
   storageType * tmpSignals2; // to be used if 'useOrg' is set.
   storageType * tmpSignals3; // to be used if 'nrBins' is set.
-  int orgStart,orgEnd; 
+  int orgStart,orgEnd;
   // use this to store the signals, FP,RP,CP,FN,RN,CN ordered.
-  unsigned int signals[6][2*offset + 1];
+  double signals[6][2*offset + 1];
   // counters. FP,RP,CP,FN,RN,CN ordered.
   int succCnt[6] = {0,0,0,0,0,0};
   int sigReturn,sigReturn2,sigReturn3;
@@ -1058,10 +1058,10 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
   while(!infq->eof())
     {
       line_cnt++;
-      if((progress != 0) && ((line_cnt % 1000) == 0)) 
+      if((progress != 0) && ((line_cnt % 1000) == 0))
 		cerr<<setw(4)<<setfill(' ')<<setprecision(2)<<100*line_cnt/nq<<" % complete.\r";
       // read and parse one query.
-      getline(*infq,line); 
+      getline(*infq,line);
       if(parseBEDline(line,&tmp,0,1,2,5) < 1) // skip possible empty lines
 		continue;
       // prepare the query accoding to which position that should be used?
@@ -1070,87 +1070,87 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 		  orgStart = tmp.pos;
 		  orgEnd   = tmp.pos + tmp.len -1;
 		}
-	  
+
       if(strcmp(type.c_str(),"c") == 0)
 		tmp.pos += (int)(((double)(tmp.len-1)/2.0) + 0.5);
       if(strcmp(type.c_str(),"s") == 0)
-		if(tmp.strand == -1) // negative strand. flip. 
+		if(tmp.strand == -1) // negative strand. flip.
 		  tmp.pos += (tmp.len-1);
       if(strcmp(type.c_str(),"e") == 0)
 		if(tmp.strand == 1) // positive strand
 		  tmp.pos += (tmp.len-1);
-	  
+
       for (int sigType = 0;sigType<=2;sigType++)
 		{
 		  if((sigType == 2) && (both == 0)) // combined but no combined wanted
 			break;
-		  if(nrBins == 0) // the "normal" case 
+		  if(nrBins == 0) // the "normal" case
 			{
-			  // Forward (0) 
+			  // Forward (0)
 			  if(sigType == 0)
 				sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsF,
 									   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
-			  // Reverse (1) 
+			  // Reverse (1)
 			  if(sigType == 1)
 				sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsR,
 									   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
-			  // Combined (2) 
+			  // Combined (2)
 			  if(sigType == 2)
 				sigReturn = getSignalF((ifstream*)seqFiles[tmp.seq].fsC,
 									   tmp.pos-offset+move,tmp.pos+offset+move,tmpSignals);
 			}
 		  if(all == 1 && useOrg == 1) // write out orignal regions in every position
 			{
-			  tmpSignals2 = new storageType[tmp.len]; 
-			  
-			  // Forward (0) 
+			  tmpSignals2 = new storageType[tmp.len];
+
+			  // Forward (0)
 			  if(sigType == 0)
 				sigReturn2 = getSignalF((ifstream*)seqFiles[tmp.seq].fsF,
 										orgStart+move,orgEnd+move,tmpSignals2);
-			  // Reverse (1) 
+			  // Reverse (1)
 			  if(sigType == 1)
 				sigReturn2 = getSignalF((ifstream*)seqFiles[tmp.seq].fsR,
 										orgStart+move,orgEnd+move,tmpSignals2);
-			  // Combined (2) 
+			  // Combined (2)
 			  if(sigType == 2)
 				sigReturn2 = getSignalF((ifstream*)seqFiles[tmp.seq].fsC,
 										orgStart+move,orgEnd+move,tmpSignals2);
 			}
-		  
+
 		  if(nrBins > 0) // here we need original regions + offset
 			{
-			  tmpSignals3 = new storageType[tmp.len + 2*offset]; 
-			
-			  // Forward (0) 
+			  tmpSignals3 = new storageType[tmp.len + 2*offset];
+
+			  // Forward (0)
 			  if(sigType == 0)
 				sigReturn3 = getSignalF((ifstream*)seqFiles[tmp.seq].fsF,
 										orgStart+move-offset,orgEnd+move+offset,tmpSignals3);
-			  // Reverse (1) 
+			  // Reverse (1)
 			  if(sigType == 1)
 				sigReturn3 = getSignalF((ifstream*)seqFiles[tmp.seq].fsR,
 										orgStart+move-offset,orgEnd+move+offset,tmpSignals3);
-			  // Combined (2) 
+			  // Combined (2)
 			  if(sigType == 2)
 				sigReturn3 = getSignalF((ifstream*)seqFiles[tmp.seq].fsC,
 										orgStart+move-offset,orgEnd+move+offset,tmpSignals3);
 			}
-		  
-		  
-		  // this whole part needs to be split depending on if 'useOrg' or nrBins' are set, the offset-queries or the original could fail independently. 
+
+
+		  // this whole part needs to be split depending on if 'useOrg' or nrBins' are set, the offset-queries or the original could fail independently.
 		  if(nrBins == 0)
 			{
 			  if(sigReturn < 0) // failed query. write to error-file
 				{
 				  ofs[3]<<tmp.seq<<"\t"<<tmp.pos<<"\t"<<(tmp.strand == 1 ? "+":"-")<<endl;
-				  if(all == 1 && useOrg == 0) 
+				  if(all == 1 && useOrg == 0)
 					{
 					  if(avg == 1)
 						{
-						  aofs[sigType]<<errSymb<<endl; // write error-symbol to "all"-files if '-a' and '-avg' were set. 
+						  aofs[sigType]<<errSymb<<endl; // write error-symbol to "all"-files if '-a' and '-avg' were set.
 						}
 					  else
 						{
-						  for (int i = 0; i < (2*offset + 1);i++) // write (matrix preserving) error-symbols to "all"-files if '-avg' is not set. 
+						  for (int i = 0; i < (2*offset + 1);i++) // write (matrix preserving) error-symbols to "all"-files if '-avg' is not set.
 							if(i == 0)
 							  aofs[sigType]<<errSymb;
 							else
@@ -1189,7 +1189,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 						  aofs[sigType]<<endl;
 						}
 					}
-				  if(all == 1 && avg == 1 && useOrg == 0) // no point in splitting on direction (+/-) when averaging. 
+				  if(all == 1 && avg == 1 && useOrg == 0) // no point in splitting on direction (+/-) when averaging.
 					{
 					  double tmpSum = 0.0;
 					  for (int i = 0; i < (2*offset + 1);i++)
@@ -1199,9 +1199,9 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 					}
 				}
 			  /*
-			   * this whole part is the above repeated but for the special case when useOrg is set. 
+			   * this whole part is the above repeated but for the special case when useOrg is set.
 			   */
-			  if(all == 1 && useOrg == 1) // if useOrg is set, nrBins cannot be set since nrBins auto turns useOrg off. right. 
+			  if(all == 1 && useOrg == 1) // if useOrg is set, nrBins cannot be set since nrBins auto turns useOrg off. right.
 				{
 				  if(sigReturn2 < 0) // failed query. write to error-file
 					aofs[sigType]<<errSymb<<endl;
@@ -1231,8 +1231,8 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 								  aofs[sigType]<<"\t"<<tmpSignals2[(tmp.strand == 1 ? i : tmp.len -i -1)];
 							  aofs[sigType]<<endl;
 							}
-						  
-						  if(avg == 1) // no point in splitting on direction (+/-) when averaging. 
+
+						  if(avg == 1) // no point in splitting on direction (+/-) when averaging.
 							{
 							  double tmpSum = 0.0;
 							  for (int i = 0; i < tmp.len;i++)
@@ -1240,7 +1240,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 							  tmpSum = tmpSum/(double)tmp.len;
 							  aofs[sigType]<<tmpSum<<endl;
 							}
-						  
+
 						}
 					}
 				  delete[] tmpSignals2;
@@ -1249,14 +1249,14 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 		  /*
 		   * binned results
 		   */
-		  if(nrBins > 0) // if useOrg is set, nrBins cannot be set since nrBins auto turns useOrg off. right. 
+		  if(nrBins > 0) // if useOrg is set, nrBins cannot be set since nrBins auto turns useOrg off. right.
 			{
 			  if(sigReturn3 < 0) // failed query. write to error-file
 				{
 				  ofs[3]<<tmp.seq<<"\t"<<tmp.pos<<"\t"<<(tmp.strand == 1 ? "+":"-")<<endl;
 				  if(all > 0)
 					{
-					  for(int i = 0;i<(nrBins + 2*offset);i++) // write out 'errSymb' at each position to facilitate matrix processing later on. 
+					  for(int i = 0;i<(nrBins + 2*offset);i++) // write out 'errSymb' at each position to facilitate matrix processing later on.
 						if(i == 0)
 						  aofs[sigType]<<errSymb;
 						else
@@ -1279,7 +1279,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 							break;
 						}
 					}
-				  if(passCo) 
+				  if(passCo)
 					{
 					  if (tmp.len < nrBins) // too short region that should be binned
 						{
@@ -1300,7 +1300,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 						  // decide on binsize, loop over the regions and calculate average signals,write out if 'all' is set.
 						  binSize = tmp.len/nrBins;
 						  binCntAdd = tmp.len - nrBins*binSize; // these many bins should have 1bp extra in length.
-						  
+
 						  binCurPos = offset;
 						  nrBin = 0;
 						  while(binCurPos < (tmp.len+offset))
@@ -1321,10 +1321,10 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 								else
 								  aofs[sigType]<<"\t"<<(double)(binSum)/(double)(binCnt);
 							  binCurPos += binCnt;
-							  binValues[(tmp.strand == 1 ? 0 : 3)+sigType][offset + nrBin] += (double)(binSum)/(double)(binCnt); 
+							  binValues[(tmp.strand == 1 ? 0 : 3)+sigType][offset + nrBin] += (double)(binSum)/(double)(binCnt);
 							  nrBin++;
 							}
-						  
+
 						  // get the last bases after the bins.
 						  for(int i = 0;i<offset;i++)
 							{
@@ -1352,7 +1352,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
   // clear the infq in case the caller expects it to be ok.
   infq->clear();
   delete[] tmpSignals;
-  
+
   /*
    * write out results.
    */
@@ -1391,7 +1391,7 @@ int getMultipleSignalsFPfromBED(ifstream * infq,map<string,fsHolder> seqFiles,st
 		}
 	  ofs[sigType]<<endl;
     }
-  
+
   for(int i = 0;i<6;i++)
 	delete binValues[i];
   for(int i = 0;i<4;i++)
